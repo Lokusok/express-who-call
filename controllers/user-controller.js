@@ -26,7 +26,7 @@ class UserController {
 
   // проверка пользователя на уникальность по email, username
   async checkUnique(req, res) {
-    let { type, value } = req.body;
+    const { type, value } = req.body;
     let result = null;
 
     switch (type) {
@@ -47,15 +47,11 @@ class UserController {
   async getByEmail(req, res) {
     const { email } = req.body;
 
-    console.log({ email });
-
     if (!email) {
       return res.status(403).json({});
     }
 
     const findedUser = await User.findOne({ where: { email } });
-
-    console.log({ findedUser });
 
     return res.json(findedUser);
   }
