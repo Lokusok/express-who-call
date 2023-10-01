@@ -7,5 +7,6 @@ router.post('/register', userController.registerUser);
 router.post('/auth', userController.authUser);
 router.post('/check-unique', userController.checkUnique);
 router.post('/get-by-email', userController.getByEmail);
+router.post('/verify-jwt', userController.verifyJWT);
 
 module.exports = router;

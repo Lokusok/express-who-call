@@ -2,13 +2,15 @@ const { User } = require('../models');
 const bcrypt = require('bcrypt');
 const jsonwebtoken = require('jsonwebtoken');
 
+const generateJWT = require('../utils/generate-jwt');
+
 class UserController {
   // регистрация нового пользователя
   async registerUser(req, res) {
     let { username, email, password } = req.body;
 
     if (![username, email, password].every(Boolean)) {
-      res.status(403).json({});
+      return res.status(403).json({});
     }
 
     password = await bcrypt.hash(password, 5);
@@ -56,23 +58,52 @@ class UserController {
     const { email, password } = req.body;
 
     if (![email, password].every(Boolean)) {
-      res.status(403).json({});
+      return res.status(403).json({});
     }
 
     const user = await User.findOne({
       where: { email },
       attributes: ['password', 'nickname'],
     });
+
+    console.log({ user, email });
+    if (!user) {
+      return res.status(403).json({});
+    }
+
     const isPasswordEqual = await bcrypt.compare(
       password,
       user.getDataValue('password')
     );
+    let token = null;
+
+    if (user) {
+      token = generateJWT({ username: user.getDataValue('nickname') }, '12h');
+    }
+
     const result = {
       result: isPasswordEqual,
       username: isPasswordEqual ? user.getDataValue('nickname') : null,
+      token,
     };
 
     res.status(200).json(result);
+  }
+
+  async verifyJWT(req, res) {
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(403).json({});
+    }
+
+    try {
+      let result = jsonwebtoken.verify(token, process.env.SECRET_KEY);
+
+      return res.json(result);
+    } catch (err) {
+      return res.status(403).json({});
+    }
   }
 }
 
