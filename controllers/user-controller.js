@@ -13,14 +13,9 @@ class UserController {
 
     password = await bcrypt.hash(password, 5);
     const newUser = await User.create({ nickname: username, email, password });
-    const token = jsonwebtoken.sign(
-      { loggedIn: false },
-      process.env.SECRET_KEY
-    );
 
     return res.json({
       user: newUser,
-      token,
     });
   }
 
@@ -58,7 +53,26 @@ class UserController {
 
   // авторизация пользователя
   async authUser(req, res) {
-    res.end('in process');
+    const { email, password } = req.body;
+
+    if (![email, password].every(Boolean)) {
+      res.status(403).json({});
+    }
+
+    const user = await User.findOne({
+      where: { email },
+      attributes: ['password', 'nickname'],
+    });
+    const isPasswordEqual = await bcrypt.compare(
+      password,
+      user.getDataValue('password')
+    );
+    const result = {
+      result: isPasswordEqual,
+      username: isPasswordEqual ? user.getDataValue('nickname') : null,
+    };
+
+    res.status(200).json(result);
   }
 }
 
