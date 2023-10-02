@@ -55,11 +55,13 @@ class UserController {
 
   // авторизация пользователя
   async authUser(req, res) {
-    const { email, password } = req.body;
+    const { email, password, remember } = req.body;
 
     if (![email, password].every(Boolean)) {
       return res.status(403).json({});
     }
+
+    console.log({ email, password, remember });
 
     const user = await User.findOne({
       where: { email },
@@ -75,6 +77,11 @@ class UserController {
       password,
       user.getDataValue('password')
     );
+
+    if (!isPasswordEqual) {
+      return res.status(403).json({});
+    }
+
     let token = null;
 
     if (user) {
@@ -83,7 +90,8 @@ class UserController {
 
     const result = {
       result: isPasswordEqual,
-      username: isPasswordEqual ? user.getDataValue('nickname') : null,
+      username: user.getDataValue('nickname'),
+      rememberUser: remember,
       token,
     };
 
