@@ -98,6 +98,7 @@ class UserController {
     res.status(200).json(result);
   }
 
+  // проверка jwt - токена
   async verifyJWT(req, res) {
     const { token } = req.body;
 
