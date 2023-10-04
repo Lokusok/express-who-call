@@ -1,3 +1,5 @@
+const axios = require('axios');
+
 const { Tel } = require('../models');
 
 const isValidTelNumber = require('../utils/is-valid-tel-number');
@@ -52,6 +54,23 @@ class TelController {
     }
 
     return res.json(isValidTelNumber(telNumber));
+  }
+
+  // получить дополнительную информацию
+  async getAdditionalInfo(req, res) {
+    const { telNumber } = req.query;
+
+    if (!telNumber) {
+      res.status(403).json({});
+    }
+
+    const info = await axios.get('https://num.voxlink.ru/get/', {
+      params: {
+        num: telNumber,
+      }
+    });
+
+    return res.json(info.data);
   }
 }
 
