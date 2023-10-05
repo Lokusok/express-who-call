@@ -1,6 +1,8 @@
 const axios = require('axios');
+const { QueryTypes } = require('sequelize');
 
-const { Tel } = require('../models');
+const { Tel, Comment } = require('../models');
+const sequelize = require('../db');
 
 const isValidTelNumber = require('../utils/is-valid-tel-number');
 const standartifyTelNumber = require('../utils/standartify-tel-number');
@@ -26,6 +28,7 @@ class TelController {
     const searchedTel = await Tel.findOne({ where: { telNumber: search } });
 
     if (!searchedTel) {
+      // добавить добавление несуществующего в бд, но с предварительной валидацией.
       return res.status(404).json({});
     }
 
@@ -67,10 +70,61 @@ class TelController {
     const info = await axios.get('https://num.voxlink.ru/get/', {
       params: {
         num: telNumber,
-      }
+      },
     });
 
     return res.json(info.data);
+  }
+
+  // получить последние проверенные телефоны
+  async getLastVerifiedTels(req, res) {
+    // const lastsTels = await Tel.findAll({ order: [['createdAt', 'DESC']] });
+    const lastsTels = await sequelize.query(
+      `SELECT public."Tels".*,
+      (SELECT COUNT(*)
+      FROM public."Comments"
+      WHERE public."Comments"."TelId" = public."Tels"."id") AS "commentsCount"
+      FROM public."Tels"
+      ORDER BY "createdAt" DESC;`,
+      { type: QueryTypes.SELECT }
+    );
+
+    console.log({ lastsTels });
+
+    return res.json(lastsTels);
+  }
+
+  // получить самые просматриваемые посты
+  async getMostViewed(req, res) {
+    // const mostViewed = await Tel.findAll({ order: [['viewsCount', 'DESC']] });
+    const mostViewed = await sequelize.query(
+      `SELECT public."Tels".*,
+      (SELECT COUNT(*)
+      FROM public."Comments"
+      WHERE public."Comments"."TelId" = public."Tels"."id") AS "commentsCount"
+      FROM public."Tels"
+      ORDER BY "viewsCount" DESC;`,
+      { type: QueryTypes.SELECT }
+    );
+
+    console.log(mostViewed);
+
+    res.json(mostViewed);
+  }
+
+  // получить самые комментируемые посты
+  async getMostCommented(req, res) {
+    const mostCommented = await sequelize.query(
+      `SELECT public."Tels".*,
+      (SELECT COUNT(*)
+      FROM public."Comments"
+      WHERE public."Comments"."TelId" = public."Tels"."id") AS "commentsCount"
+      FROM public."Tels"
+      ORDER BY "commentsCount" DESC;`,
+      { type: QueryTypes.SELECT }
+    );
+
+    return res.json(mostCommented);
   }
 }
 

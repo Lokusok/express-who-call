@@ -32,7 +32,11 @@ const Tel = sequelize.define('Tel', {
   },
 });
 
-const Comment = sequelize.define('Comment', {});
+const Comment = sequelize.define('Comment', {
+  description: {
+    type: DataTypes.TEXT,
+  },
+});
 
 User.hasMany(Comment);
 Comment.belongsTo(User);

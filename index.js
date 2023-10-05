@@ -19,7 +19,7 @@ app.use(router);
 async function start() {
   try {
     await sequelize.authenticate();
-    await sequelize.sync();
+    await sequelize.sync({ alter: true });
 
     app.listen(PORT, () => {
       console.log(`listening on http://localhost:${PORT}`);
