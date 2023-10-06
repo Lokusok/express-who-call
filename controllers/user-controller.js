@@ -61,14 +61,11 @@ class UserController {
       return res.status(403).json({});
     }
 
-    console.log({ email, password, remember });
-
     const user = await User.findOne({
       where: { email },
-      attributes: ['password', 'nickname'],
+      attributes: ['id', 'password', 'nickname'],
     });
 
-    console.log({ user, email });
     if (!user) {
       return res.status(403).json({});
     }
@@ -85,7 +82,13 @@ class UserController {
     let token = null;
 
     if (user) {
-      token = generateJWT({ username: user.getDataValue('nickname') }, '12h');
+      token = generateJWT(
+        {
+          id: user.getDataValue('id'),
+          username: user.getDataValue('nickname'),
+        },
+        '12h'
+      );
     }
 
     const result = {

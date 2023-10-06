@@ -21,7 +21,6 @@ class TelController {
     search = minifyTelNumber(internationalFormat);
 
     if (!isValidTelNumber(search)) {
-      console.log('не валиден');
       return res.status(409).json({});
     }
 
@@ -89,8 +88,6 @@ class TelController {
       { type: QueryTypes.SELECT }
     );
 
-    console.log({ lastsTels });
-
     return res.json(lastsTels);
   }
 
@@ -106,8 +103,6 @@ class TelController {
       ORDER BY "viewsCount" DESC;`,
       { type: QueryTypes.SELECT }
     );
-
-    console.log(mostViewed);
 
     res.json(mostViewed);
   }
