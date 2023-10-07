@@ -2,7 +2,7 @@ const jsonwebtoken = require('jsonwebtoken');
 const axios = require('axios');
 const moment = require('moment');
 
-const { Comment, User } = require('../models');
+const { Comment, User, Tel } = require('../models');
 
 class CommentsController {
   // создание нового комментария
@@ -88,6 +88,37 @@ class CommentsController {
     });
 
     res.json(allComments);
+  }
+
+  // получить новые комментарии
+  async getNewComments(req, res) {
+    const { limit } = req.query;
+
+    const newComments = JSON.parse(
+      JSON.stringify(
+        await Comment.findAll({
+          include: {
+            model: Tel,
+            attributes: ['telNumber'],
+          },
+          order: [['createdAt', 'DESC']],
+          limit,
+        })
+      )
+    );
+
+    newComments.forEach(async (comment) => {
+      console.log(comment.TelId);
+      comment.telCommentsCounts = JSON.parse(
+        JSON.stringify(
+          await Comment.findAll({
+            where: { TelId: comment.TelId },
+          })
+        )
+      ).length;
+    });
+
+    return res.json(newComments);
   }
 }
 

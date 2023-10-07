@@ -11,6 +11,7 @@ router.get(
   '/get-all-comments-for-telnumber',
   commentsController.getAllCommentsForTelNumber
 );
+router.get('/get-new-comments', commentsController.getNewComments);
 
 router.post('/new', commentsController.makeComment);
 
