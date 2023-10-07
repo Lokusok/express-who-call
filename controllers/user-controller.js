@@ -93,6 +93,7 @@ class UserController {
 
     const result = {
       result: isPasswordEqual,
+      id: user.getDataValue('id'),
       username: user.getDataValue('nickname'),
       rememberUser: remember,
       token,

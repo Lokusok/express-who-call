@@ -36,6 +36,18 @@ const Comment = sequelize.define('Comment', {
   description: {
     type: DataTypes.TEXT,
   },
+  username: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
+  rating: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+  },
+  type: {
+    type: DataTypes.TEXT,
+    allowNull: true,
+  },
 });
 
 User.hasMany(Comment);
