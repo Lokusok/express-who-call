@@ -15,7 +15,7 @@ class CommentsController {
       const { id: UserId } = tokenData;
 
       const response = await axios.get(
-        `http://localhost:${process.env.PORT}/comments/get-comment-for-telnumber`,
+        `${process.env.HOST}/comments/get-comment-for-telnumber`,
         {
           params: {
             userId: UserId,
@@ -37,10 +37,7 @@ class CommentsController {
         rating,
         type,
       });
-
-      console.log({ UserId, description, telId });
     } catch (err) {
-      console.log(err.message);
       // не был передан токен (пользователь не авторизован)
       commentInstance = await Comment.create({
         TelId: telId,
@@ -50,6 +47,14 @@ class CommentsController {
         type,
       });
     }
+
+    const response = await axios.get(`${process.env.HOST}/tel/get-avg-rating`, {
+      params: {
+        telId,
+      },
+    });
+    const avgRating = Number(response.data.avgRating).toFixed(1);
+    await Tel.update({ rating: avgRating }, { where: { id: telId } });
 
     res.json(commentInstance);
   }
@@ -78,7 +83,12 @@ class CommentsController {
     }
 
     const allComments = JSON.parse(
-      JSON.stringify(await Comment.findAll({ where: { TelId: telId } }))
+      JSON.stringify(
+        await Comment.findAll({
+          where: { TelId: telId },
+          order: [['createdAt', 'DESC']],
+        })
+      )
     );
     allComments.forEach((comment) => {
       const date = new Date(comment.createdAt);
@@ -107,9 +117,7 @@ class CommentsController {
       )
     );
 
-    console.log({ newComments });
-
-    for await (const comment of newComments) {
+    for (const comment of newComments) {
       comment.telCommentsCount = JSON.parse(
         JSON.stringify(
           await Comment.findAll({

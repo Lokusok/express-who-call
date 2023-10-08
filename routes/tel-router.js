@@ -7,9 +7,11 @@ router.get('/info', telController.getAdditionalInfo);
 router.get('/get-last-verified', telController.getLastVerifiedTels);
 router.get('/get-most-viewed', telController.getMostViewed);
 router.get('/get-most-commented', telController.getMostCommented);
+router.get('/get-avg-rating', telController.getAvgRating);
 
 router.post('/search', telController.searchTelNumber);
-router.post('/isValid', telController.isValid);
+router.post('/is-valid', telController.isValid);
 router.post('/standartify', telController.standartifyTelNumber);
+router.post('/increment-views-count', telController.incrementViewsCount);
 
 module.exports = router;

@@ -1,3 +1,4 @@
+const { fn, col } = require('sequelize');
 const axios = require('axios');
 const { QueryTypes } = require('sequelize');
 
@@ -124,6 +125,31 @@ class TelController {
     );
 
     return res.json(mostCommented);
+  }
+
+  // увеличить количество просмотров
+  async incrementViewsCount(req, res) {
+    const { telId } = req.body;
+
+    if (!telId) {
+      res.status(403).json({});
+    }
+
+    const telNumber = await Tel.findOne({ where: { id: telId } });
+    await telNumber.increment('viewsCount');
+
+    return res.json(telNumber);
+  }
+
+  // получить средний рейтинг номера
+  async getAvgRating(req, res) {
+    const { telId } = req.query;
+    const avgRating = await Comment.findOne({
+      attributes: [[fn('AVG', col('rating')), 'avgRating']],
+      where: { TelId: telId },
+    });
+
+    return res.json(avgRating);
   }
 }
 
