@@ -77,14 +77,15 @@ class TelController {
 
   // получить последние проверенные телефоны
   async getLastVerifiedTels(req, res) {
-    // const lastsTels = await Tel.findAll({ order: [['createdAt', 'DESC']] });
+    const { limit = 10 } = req.query;
     const lastsTels = await sequelize.query(
       `SELECT public."Tels".*,
       (SELECT COUNT(*)
       FROM public."Comments"
       WHERE public."Comments"."TelId" = public."Tels"."id") AS "commentsCount"
       FROM public."Tels"
-      ORDER BY "createdAt" DESC;`,
+      ORDER BY "createdAt" DESC
+      LIMIT ${limit};`,
       { type: QueryTypes.SELECT }
     );
 
@@ -93,14 +94,15 @@ class TelController {
 
   // получить самые просматриваемые посты
   async getMostViewed(req, res) {
-    // const mostViewed = await Tel.findAll({ order: [['viewsCount', 'DESC']] });
+    const { limit = 10 } = req.query;
     const mostViewed = await sequelize.query(
       `SELECT public."Tels".*,
       (SELECT COUNT(*)
       FROM public."Comments"
       WHERE public."Comments"."TelId" = public."Tels"."id") AS "commentsCount"
       FROM public."Tels"
-      ORDER BY "viewsCount" DESC;`,
+      ORDER BY "viewsCount" DESC
+      LIMIT ${limit};`,
       { type: QueryTypes.SELECT }
     );
 
@@ -109,13 +111,15 @@ class TelController {
 
   // получить самые комментируемые посты
   async getMostCommented(req, res) {
+    const { limit = 10 } = req.query;
     const mostCommented = await sequelize.query(
       `SELECT public."Tels".*,
       (SELECT COUNT(*)
       FROM public."Comments"
       WHERE public."Comments"."TelId" = public."Tels"."id") AS "commentsCount"
       FROM public."Tels"
-      ORDER BY "commentsCount" DESC;`,
+      ORDER BY "commentsCount" DESC
+      LIMIT ${limit};`,
       { type: QueryTypes.SELECT }
     );
 
