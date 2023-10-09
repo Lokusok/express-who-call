@@ -48,6 +48,44 @@ class TelController {
     return res.json(result);
   }
 
+  // минификация номера телефона
+  async minifyTelNumber(req, res) {
+    const { telNumber } = req.body;
+
+    console.log({ telNumber });
+    if (!telNumber) {
+      return res.status(403).json({});
+    }
+
+    const responseValid = await axios.post(`${process.env.HOST}/tel/is-valid`, {
+      telNumber,
+    });
+    const isValid = responseValid.data;
+
+    if (!isValid) {
+      return res.status(403).json({ message: 'Номер не валиден' });
+    }
+
+    const responseFormats = await axios.post(
+      `${process.env.HOST}/tel/standartify`,
+      {
+        telNumber,
+      }
+    );
+    const { internationalFormat } = responseFormats.data;
+
+    console.log({ internationalFormat });
+
+    const minifiedTelNumber = minifyTelNumber(internationalFormat);
+
+    console.log({ minifiedTelNumber });
+
+    return res.json({
+      minifiedTelNumber,
+      isValid,
+    });
+  }
+
   // проверка на валидность
   async isValid(req, res) {
     const { telNumber } = req.body;
@@ -67,11 +105,23 @@ class TelController {
       res.status(403).json({});
     }
 
-    const info = await axios.get('https://num.voxlink.ru/get/', {
-      params: {
-        num: telNumber,
-      },
-    });
+    let info = null;
+
+    console.log({ telNumber });
+
+    try {
+      info = await axios.get('https://num.voxlink.ru/get/', {
+        params: {
+          num: telNumber,
+        },
+      });
+    } catch (err) {
+      info = await axios.get('https://num.voxlink.ru/get/', {
+        params: {
+          num: telNumber,
+        },
+      });
+    }
 
     return res.json(info.data);
   }

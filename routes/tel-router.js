@@ -13,5 +13,6 @@ router.post('/search', telController.searchTelNumber);
 router.post('/is-valid', telController.isValid);
 router.post('/standartify', telController.standartifyTelNumber);
 router.post('/increment-views-count', telController.incrementViewsCount);
+router.post('/minify-tel-number', telController.minifyTelNumber);
 
 module.exports = router;
