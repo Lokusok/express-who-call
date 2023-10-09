@@ -9,6 +9,10 @@ class CommentsController {
   async makeComment(req, res) {
     const { token, username, telId, description, type, rating } = req.body;
 
+    if (username.length < 2 || username.length > 10) {
+      return res.status(403).status({});
+    }
+
     let commentInstance = null;
     try {
       const tokenData = jsonwebtoken.verify(token, process.env.SECRET_KEY);

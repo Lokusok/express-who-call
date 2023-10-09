@@ -13,6 +13,10 @@ class UserController {
       return res.status(403).json({});
     }
 
+    if (username.length < 2 || username.length > 10) {
+      return res.status(403).status({});
+    }
+
     password = await bcrypt.hash(password, 5);
     const newUser = await User.create({ nickname: username, email, password });
 
