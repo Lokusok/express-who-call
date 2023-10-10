@@ -1,6 +1,7 @@
 const { fn, col } = require('sequelize');
 const axios = require('axios');
 const { QueryTypes } = require('sequelize');
+const moment = require('moment');
 
 const { Tel, Comment } = require('../models');
 const sequelize = require('../db');
@@ -8,28 +9,39 @@ const sequelize = require('../db');
 const isValidTelNumber = require('../utils/is-valid-tel-number');
 const standartifyTelNumber = require('../utils/standartify-tel-number');
 const minifyTelNumber = require('../utils/minify-tel-number');
+const getMonthName = require('../utils/get-month-name');
+const months = require('../utils/vars/months');
 
 class TelController {
   // поиск телефона
   async searchTelNumber(req, res) {
-    let { search } = req.body;
+    let { telNumber, telId } = req.body;
 
-    if (!search) {
+    if (!telNumber && !telId) {
       return res.status(404).json({});
     }
 
-    const { internationalFormat } = standartifyTelNumber(search);
-    search = minifyTelNumber(internationalFormat);
+    let internationalFormat = null;
 
-    if (!isValidTelNumber(search)) {
-      return res.status(409).json({});
+    if (telNumber) {
+      internationalFormat = standartifyTelNumber(telNumber).internationalFormat;
+      telNumber = minifyTelNumber(internationalFormat);
+
+      if (!isValidTelNumber(telNumber)) {
+        return res.status(403).json({});
+      }
     }
 
-    const searchedTel = await Tel.findOne({ where: { telNumber: search } });
+    let searchedTel = null;
 
-    if (!searchedTel) {
-      // добавить добавление несуществующего в бд, но с предварительной валидацией.
-      return res.status(404).json({});
+    if (telNumber) {
+      searchedTel = await Tel.findOne({ where: { telNumber } });
+    } else if (telId) {
+      searchedTel = await Tel.findOne({ where: { id: telId } });
+    }
+
+    if (!searchedTel && telNumber) {
+      searchedTel = await Tel.create({ telNumber });
     }
 
     return res.json(searchedTel);
@@ -52,7 +64,6 @@ class TelController {
   async minifyTelNumber(req, res) {
     const { telNumber } = req.body;
 
-    console.log({ telNumber });
     if (!telNumber) {
       return res.status(403).json({});
     }
@@ -74,11 +85,7 @@ class TelController {
     );
     const { internationalFormat } = responseFormats.data;
 
-    console.log({ internationalFormat });
-
     const minifiedTelNumber = minifyTelNumber(internationalFormat);
-
-    console.log({ minifiedTelNumber });
 
     return res.json({
       minifiedTelNumber,
@@ -106,8 +113,6 @@ class TelController {
     }
 
     let info = null;
-
-    console.log({ telNumber });
 
     try {
       info = await axios.get('https://num.voxlink.ru/get/', {
@@ -200,6 +205,52 @@ class TelController {
     });
 
     return res.json(avgRating);
+  }
+
+  // получить активность по месяцам
+  async getActivity(req, res) {
+    const { telId } = req.query;
+
+    if (!telId) {
+      return res.status(403).json({});
+    }
+
+    const responseTelNumber = await axios.post(
+      `${process.env.HOST}/tel/search`,
+      {
+        telId,
+      }
+    );
+    const telNumberObj = responseTelNumber.data;
+    const comments = await Comment.findAll({
+      where: {
+        TelId: telNumberObj.id,
+      },
+      include: {
+        model: Tel,
+      },
+    });
+
+    const activityArr = [];
+
+    for (let monthName of months) {
+      let countMonthComms = 0;
+
+      comments.forEach((comment) => {
+        const monthNameObj = getMonthName({ obj: comment });
+
+        if (monthName === monthNameObj) {
+          countMonthComms++;
+        }
+      });
+
+      activityArr.push({
+        name: monthName,
+        count: countMonthComms,
+      });
+    }
+
+    return res.json(activityArr);
   }
 }
 

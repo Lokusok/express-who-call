@@ -26,9 +26,11 @@ const Tel = sequelize.define('Tel', {
   },
   rating: {
     type: DataTypes.FLOAT,
+    defaultValue: 0,
   },
   viewsCount: {
     type: DataTypes.INTEGER,
+    defaultValue: 0,
   },
 });
 

@@ -8,6 +8,7 @@ router.get('/get-last-verified', telController.getLastVerifiedTels);
 router.get('/get-most-viewed', telController.getMostViewed);
 router.get('/get-most-commented', telController.getMostCommented);
 router.get('/get-avg-rating', telController.getAvgRating);
+router.get('/get-activity', telController.getActivity);
 
 router.post('/search', telController.searchTelNumber);
 router.post('/is-valid', telController.isValid);
