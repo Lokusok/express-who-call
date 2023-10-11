@@ -133,6 +133,41 @@ class CommentsController {
 
     return res.json(newComments);
   }
+
+  // получить все комментарии
+  async getAllComments(req, res) {
+    const { page } = req.query;
+
+    if (!page) {
+      return res.status(403).json({});
+    }
+
+    const allComments = JSON.parse(
+      JSON.stringify(
+        await Comment.findAndCountAll({
+          limit: 5,
+          offset: (page - 1) * 5,
+          include: {
+            model: Tel,
+            attributes: ['telNumber'],
+          },
+          order: [['createdAt', 'DESC']],
+        })
+      )
+    );
+
+    allComments.rows.forEach((comment) => {
+      const date = new Date(comment.createdAt);
+
+      comment.date = moment(date).format('YYYY.MM.DD');
+      comment.time = moment(date).format('hh:mm:ss');
+    });
+
+    allComments.items = allComments.rows;
+    delete allComments.rows;
+
+    return res.json(allComments);
+  }
 }
 
 module.exports = new CommentsController();
