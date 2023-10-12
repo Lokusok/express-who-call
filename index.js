@@ -7,7 +7,6 @@ const cors = require('cors');
 
 const sequelize = require('./db');
 const router = require('./routes');
-const { User, Tel, Comments } = require('./models');
 
 const app = express();
 
@@ -15,6 +14,10 @@ app.use(cors());
 app.use(express.json());
 
 app.use(router);
+// глобальный обработчик ошибок
+app.use((err, req, res, next) => {
+  res.status(500).json({});
+});
 
 async function start() {
   try {

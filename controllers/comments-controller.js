@@ -60,7 +60,7 @@ class CommentsController {
     const avgRating = Number(response.data.avgRating).toFixed(1);
     await Tel.update({ rating: avgRating }, { where: { id: telId } });
 
-    res.json(commentInstance);
+    return res.json(commentInstance);
   }
 
   // получить комментарий пользователя к определённому номеру
