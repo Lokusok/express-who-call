@@ -8,5 +8,7 @@ router.post('/auth', userController.authUser);
 router.post('/check-unique', userController.checkUnique);
 router.post('/get-by-email', userController.getByEmail);
 router.post('/verify-jwt', userController.verifyJWT);
+router.post('/change-password', userController.changePassword);
+router.post('/check-exist-by-token', userController.checkExistByToken);
 
 module.exports = router;

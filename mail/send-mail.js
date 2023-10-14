@@ -1,35 +1,15 @@
-const nodemailer = require('nodemailer');
-const { OAuth2_client } = require('./mail.config');
+const createTransport = require('./utils/createTransport');
+const createMailOptions = require('./utils/createMailOptions');
 
-function sendMail(recipient, { name, email, text }) {
-  const accessToken = OAuth2_client.getAccessToken();
+function sendMail(recipient, { subject, html }) {
+  const transport = createTransport();
 
-  const transport = nodemailer.createTransport({
-    service: 'gmail',
-    auth: {
-      type: 'OAuth2',
-      user: process.env.EMAIL_USER,
-      clientId: process.env.CLIENT_ID,
-      clientSecret: process.env.CLIENT_SECRET,
-      refreshToken: process.env.REFRESH_TOKEN,
-      accessToken: accessToken,
-    },
-  });
-
-  const mailOptions = {
+  const mailOptions = createMailOptions({
     from: `Node js <${process.env.EMAIL_USER}>`,
     to: recipient,
-    subject: 'Message from nodeJS',
-    html: `
-      <u>Вопрос с сайта <b>who-call</b></u>
-
-      <ul>
-        <li>Имя пользователя: <b>${name}</b></li>
-        <li>Email пользователя: <b>${email}</b></li>
-        <li>Вопрос: <b>${text}</b></li>
-      </ul>
-    `,
-  };
+    subject,
+    html,
+  });
 
   transport.sendMail(mailOptions, (err, res) => {
     if (err) {

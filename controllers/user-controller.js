@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt');
 const jsonwebtoken = require('jsonwebtoken');
 
 const generateJWT = require('../utils/generate-jwt');
+const hashPassword = require('../utils/hash-password');
 
 class UserController {
   // регистрация нового пользователя
@@ -17,7 +18,7 @@ class UserController {
       return res.status(403).status({});
     }
 
-    password = await bcrypt.hash(password, 5);
+    password = await hashPassword({ password });
     const newUser = await User.create({ nickname: username, email, password });
 
     return res.json({
@@ -121,6 +122,44 @@ class UserController {
     } catch (err) {
       return res.status(403).json({});
     }
+  }
+
+  // смена пароля на новый
+  async changePassword(req, res) {
+    const { newPassword, token } = req.body;
+
+    if (![newPassword, token].every(Boolean)) {
+      return res.status(403).json({});
+    }
+
+    const user = await User.findOne({ where: { token } });
+
+    if (!user) {
+      return res.status(403).json({});
+    }
+
+    user.password = await hashPassword({ password: newPassword });
+    user.token = null;
+    await user.save();
+
+    return res.send({
+      result: 'Пароль был изменён',
+    });
+  }
+
+  // проверка на существование по токену
+  async checkExistByToken(req, res) {
+    const { token } = req.body;
+
+    if (!token) {
+      return res.status(403).json({});
+    }
+
+    const user = await User.findOne({ where: { token } });
+
+    return res.json({
+      status: Boolean(user),
+    });
   }
 }
 

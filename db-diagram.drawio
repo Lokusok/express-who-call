@@ -1,14 +1,14 @@
-<mxfile host="app.diagrams.net" modified="2023-10-07T14:08:53.871Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36" etag="7em6O1EzjhqJr1aYaxwt" version="22.0.4" type="device">
+<mxfile host="app.diagrams.net" modified="2023-10-14T16:30:13.898Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36" etag="ZnSq1oXwumNzZx_8l2x0" version="22.0.4" type="device">
   <diagram name="Страница — 1" id="RqbsXslpO_cdkqpg28u8">
-    <mxGraphModel dx="1162" dy="722" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="859" dy="534" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
         <mxCell id="_jVPbzLool0vAJ_2oPQA-1" value="User" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" parent="1" vertex="1">
-          <mxGeometry x="290" y="490" width="160" height="120" as="geometry" />
+          <mxGeometry x="290" y="430" width="160" height="136" as="geometry" />
         </mxCell>
-        <mxCell id="_jVPbzLool0vAJ_2oPQA-2" value="ID&lt;br&gt;Email&lt;br&gt;Nickname&lt;br&gt;Password" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;" parent="_jVPbzLool0vAJ_2oPQA-1" vertex="1">
-          <mxGeometry y="50" width="160" height="70" as="geometry" />
+        <mxCell id="_jVPbzLool0vAJ_2oPQA-2" value="ID&lt;br&gt;Email&lt;br&gt;Nickname&lt;br&gt;Password&lt;br&gt;Token (for reset password)" style="align=left;strokeColor=none;fillColor=none;spacingLeft=4;fontSize=12;verticalAlign=top;resizable=0;rotatable=0;part=1;html=1;" parent="_jVPbzLool0vAJ_2oPQA-1" vertex="1">
+          <mxGeometry y="50" width="160" height="86" as="geometry" />
         </mxCell>
         <mxCell id="_jVPbzLool0vAJ_2oPQA-3" value="Tel" style="swimlane;childLayout=stackLayout;horizontal=1;startSize=50;horizontalStack=0;rounded=1;fontSize=14;fontStyle=0;strokeWidth=2;resizeParent=0;resizeLast=1;shadow=0;dashed=0;align=center;arcSize=4;whiteSpace=wrap;html=1;" parent="1" vertex="1">
           <mxGeometry x="30" y="700" width="160" height="120" as="geometry" />
