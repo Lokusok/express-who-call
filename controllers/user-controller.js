@@ -4,6 +4,7 @@ const jsonwebtoken = require('jsonwebtoken');
 
 const generateJWT = require('../utils/generate-jwt');
 const hashPassword = require('../utils/hash-password');
+const validatePassword = require('../utils/validate-password');
 
 class UserController {
   // регистрация нового пользователя
@@ -15,6 +16,12 @@ class UserController {
     }
 
     if (username.length < 2 || username.length > 10) {
+      return res.status(403).status({});
+    }
+
+    const isValidPassword = validatePassword(password);
+
+    if (!isValidPassword) {
       return res.status(403).status({});
     }
 
@@ -132,6 +139,12 @@ class UserController {
       return res.status(403).json({});
     }
 
+    const isValidPassword = validatePassword(newPassword);
+
+    if (!isValidPassword) {
+      return res.status(403).json({});
+    }
+
     const user = await User.findOne({ where: { token } });
 
     if (!user) {
@@ -143,7 +156,8 @@ class UserController {
     await user.save();
 
     return res.send({
-      result: 'Пароль был изменён',
+      status: 'Пароль был изменён',
+      result: true,
     });
   }
 

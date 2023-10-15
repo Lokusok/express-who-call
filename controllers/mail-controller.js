@@ -63,13 +63,23 @@ class MailController {
     const user = await User.findOne({ where: { email } });
 
     if (!user) {
-      return res.status(403).json({});
+      return res.status(403).json({
+        status: 'Пользователь не найден',
+        type: 'USER_UNDEFINED',
+      });
     }
+
+    // if (user.token) {
+    //   return res.status(403).json({
+    //     status: 'Письмо уже отправлено',
+    //     type: 'ALREADY_SENT',
+    //   });
+    // }
 
     user.token = uuidv4();
     await user.save();
 
-    const resetLink = `${process.env.CLIENT_HOST}/reset-password/${user.token}`;
+    const resetLink = `${process.env.CLIENT_HOST}/forget_password/reset/${user.token}`;
 
     sendMail(email, {
       subject: 'Сброс пароля на сайте who-call',
