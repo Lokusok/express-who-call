@@ -9,7 +9,11 @@ class CommentsController {
   async makeComment(req, res) {
     const { token, username, telId, description, type, rating } = req.body;
 
-    if (username.length < 2 || username.length > 10) {
+    if (
+      username.length < 2 ||
+      username.length > 10 ||
+      description.length < 15
+    ) {
       return res.status(403).status({});
     }
 
@@ -19,7 +23,7 @@ class CommentsController {
       const { id: UserId } = tokenData;
 
       const response = await axios.get(
-        `${process.env.HOST}/comments/get-comment-for-telnumber`,
+        `${process.env.API_HOST}/comments/get-comment-for-telnumber`,
         {
           params: {
             userId: UserId,
@@ -52,7 +56,7 @@ class CommentsController {
       });
     }
 
-    const response = await axios.get(`${process.env.HOST}/tel/get-avg-rating`, {
+    const response = await axios.get(`${process.env.API_HOST}/tel/get-avg-rating`, {
       params: {
         telId,
       },

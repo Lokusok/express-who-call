@@ -68,9 +68,12 @@ class TelController {
       return res.status(403).json({});
     }
 
-    const responseValid = await axios.post(`${process.env.HOST}/tel/is-valid`, {
-      telNumber,
-    });
+    const responseValid = await axios.post(
+      `${process.env.API_HOST}/tel/is-valid`,
+      {
+        telNumber,
+      }
+    );
     const isValid = responseValid.data;
 
     if (!isValid) {
@@ -78,7 +81,7 @@ class TelController {
     }
 
     const responseFormats = await axios.post(
-      `${process.env.HOST}/tel/standartify`,
+      `${process.env.API_HOST}/tel/standartify`,
       {
         telNumber,
       }
@@ -216,7 +219,7 @@ class TelController {
     }
 
     const responseTelNumber = await axios.post(
-      `${process.env.HOST}/tel/search`,
+      `${process.env.API_HOST}/tel/search`,
       {
         telId,
       }

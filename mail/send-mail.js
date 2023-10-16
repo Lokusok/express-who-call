@@ -5,7 +5,7 @@ function sendMail(recipient, { subject, html }) {
   const transport = createTransport();
 
   const mailOptions = createMailOptions({
-    from: `Node js <${process.env.EMAIL_USER}>`,
+    from: `Who-Call <${process.env.EMAIL_USER_IN_TITLE}>`,
     to: recipient,
     subject,
     html,
