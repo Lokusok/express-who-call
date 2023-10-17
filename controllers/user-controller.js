@@ -175,6 +175,21 @@ class UserController {
       status: Boolean(user),
     });
   }
+
+  // проверка на существование по никнейму
+  async isExist(req, res) {
+    const { username } = req.query;
+
+    if (!username) {
+      return res.status(403).json({});
+    }
+
+    const user = await User.findOne({ where: { nickname: username } });
+
+    console.log({ user });
+
+    return res.json(Boolean(user));
+  }
 }
 
 module.exports = new UserController();

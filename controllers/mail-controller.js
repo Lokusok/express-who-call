@@ -69,13 +69,7 @@ class MailController {
       });
     }
 
-    // if (user.token) {
-    //   return res.status(403).json({
-    //     status: 'Письмо уже отправлено',
-    //     type: 'ALREADY_SENT',
-    //   });
-    // }
-
+    // при повторной отправке запроса - переотправляем письмо
     user.token = uuidv4();
     await user.save();
 

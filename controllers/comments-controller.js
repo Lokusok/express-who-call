@@ -56,11 +56,14 @@ class CommentsController {
       });
     }
 
-    const response = await axios.get(`${process.env.API_HOST}/tel/get-avg-rating`, {
-      params: {
-        telId,
-      },
-    });
+    const response = await axios.get(
+      `${process.env.API_HOST}/tel/get-avg-rating`,
+      {
+        params: {
+          telId,
+        },
+      }
+    );
     const avgRating = Number(response.data.avgRating).toFixed(1);
     await Tel.update({ rating: avgRating }, { where: { id: telId } });
 
