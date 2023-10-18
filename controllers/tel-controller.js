@@ -127,7 +127,7 @@ class TelController {
       console.log(
         '[ERROR]: Невозможно получить дополнительную информацию о номере телефона'
       );
-      return null;
+      return res.json(null);
     }
 
     return res.json(info.data);
