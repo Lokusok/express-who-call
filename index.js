@@ -1,6 +1,7 @@
 require('dotenv').config();
 
 const PORT = process.env.PORT || 8000;
+const API_HOST = process.env.API_HOST;
 
 const express = require('express');
 const cors = require('cors');
@@ -25,7 +26,7 @@ async function start() {
     await sequelize.sync({ alter: true });
 
     app.listen(PORT, () => {
-      console.log(`listening on http://localhost:${PORT}`);
+      console.log(`listening on ${API_HOST}:${PORT}`);
     });
   } catch (err) {
     console.log(err);
