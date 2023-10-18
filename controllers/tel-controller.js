@@ -124,11 +124,10 @@ class TelController {
         },
       });
     } catch (err) {
-      info = await axios.get('https://num.voxlink.ru/get/', {
-        params: {
-          num: telNumber,
-        },
-      });
+      console.log(
+        '[ERROR]: Невозможно получить дополнительную информацию о номере телефона'
+      );
+      return null;
     }
 
     return res.json(info.data);
