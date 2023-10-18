@@ -104,8 +104,8 @@ class CommentsController {
     allComments.forEach((comment) => {
       const date = new Date(comment.createdAt);
 
-      comment.date = moment(date).format('YYYY.MM.DD');
-      comment.time = moment(date).format('hh:mm:ss');
+      comment.date = moment(date).utcOffset(3).format('YYYY.MM.DD A');
+      comment.time = moment(date).utcOffset(3).format('HH:mm:ss A');
     });
 
     res.json(allComments);
@@ -166,8 +166,8 @@ class CommentsController {
     allComments.rows.forEach((comment) => {
       const date = new Date(comment.createdAt);
 
-      comment.date = moment(date).format('YYYY.MM.DD');
-      comment.time = moment(date).format('hh:mm:ss');
+      comment.date = moment(date).utcOffset(3).format('YYYY.MM.DD');
+      comment.time = moment(date).utcOffset(3).format('HH:mm:ss');
     });
 
     allComments.items = allComments.rows;
